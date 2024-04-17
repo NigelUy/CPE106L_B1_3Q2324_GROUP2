@@ -3,4 +3,5 @@ all recipes that are lacking in calories and nutrition facts were removed from t
 rows (15935) columns (7)
 Rows like sodium and fats were filled with "NO DATA" should there be data lacking
 Description contains columns that are not ingredients such as occassions 
+ADDED "ANY" to description when meal is neither breakfast dinner or lunch
 Source: https://www.kaggle.com/datasets/hugodarwood/epirecipes
