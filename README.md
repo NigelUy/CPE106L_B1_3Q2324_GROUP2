@@ -11,3 +11,7 @@ This consists of 4 branches -> Login, data, meal_generation, and master branch
 2. Download Login.py
 3. Open powershell or any command prompt
 4. Run ```flet run```
+
+**DEPENDENCIES CURRENTLY USED***
+1. Panda - data management
+2. Flet - User Interface (UI) creation 
