@@ -1,5 +1,3 @@
-This consists of 4 branches -> Login, data, meal_generation, and master branch
-
 **GETTING MEAL GENERATION AND CALORIE COUNTER TO WORK**
 1. Navigate to meal_generation branch
 2. Download all the contents of the mealgeneration file -> meal_generation.py and modified_recipe_updated.csv
