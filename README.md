@@ -5,6 +5,7 @@ This consists of 4 branches -> Login, data, meal_generation, and master branch
 2. Download all the contents of the mealgeneration file -> meal_generation.py and modified_recipe_updated.csv
 3. Ensure that the files are in the same folder and run the meal_generation.py
 4. **NOTE:** Ensure that the total calorie count for the meals is accomplishable within the day or a large leftover calorie count will occur
+5. **ENSURE THAT Pandas library is installed**
 
 **LOGIN UI TESTING**
 1. Navigate to Login branch
@@ -14,5 +15,5 @@ This consists of 4 branches -> Login, data, meal_generation, and master branch
 5. Run ```flet run``` in the command line
 
 **DEPENDENCIES CURRENTLY USED***
-1. Panda - data management
+1. Panda - data management 
 2. Flet - User Interface (UI) creation 
