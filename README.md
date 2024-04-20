@@ -10,7 +10,8 @@ This consists of 4 branches -> Login, data, meal_generation, and master branch
 1. Navigate to Login branch
 2. Download Login.py
 3. Open powershell or any command prompt
-4. Run ```flet run```
+4. Navigate to the file's path,copy it and use ```cd``` command to access the file
+5. Run ```flet run``` in the command line
 
 **DEPENDENCIES CURRENTLY USED***
 1. Panda - data management
