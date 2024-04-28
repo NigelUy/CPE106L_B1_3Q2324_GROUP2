@@ -3,6 +3,7 @@ submission_row = None
 
 
 def main(page: ft.Page):
+
     page.navigation_bar = ft.NavigationBar(
         bgcolor="blue",
         selected_index=0,
@@ -39,16 +40,49 @@ def main(page: ft.Page):
 
     def meal_Type(meal_num):
         meal = []
+        checkbox_states_list = []
         meal_num = int(meal_num)
         meal_index = 0
+        checkbox_states = [{"MEAL_ID": f"meal_{i}", "breakfast": None, "lunch": None, "dinner": None, "snacks": None} for i in range(meal_num)]
 
+        alerts = ft.AlertDialog(
+            title=ft.Text("Checkbox missing"), content=ft.Text("Please select one"), on_dismiss=lambda e: print("Dialog dismissed!")
+        )
+
+
+        def check_current_page(index):
+            """ Check if at least one checkbox on the current page is checked """
+            # Extract the relevant checkbox states for the current meal
+            nonlocal checkbox_states_list
+            current_meal_checkboxes = checkbox_states[index]
+            first = True
+            for value in current_meal_checkboxes.values():
+                if first:
+                    first = False
+                    continue
+                if value:
+                    return True
+            return False
 
         def move(index):
             nonlocal meal_index
-            meal_index = index
-            for col in meal:
-                col.visible = (meal.index(col) == meal_index)
-            page.update()
+            if check_current_page(meal_index):
+                meal_index = index
+                for row in meal:
+                    row.visible = (meal.index(row) == meal_index)
+                page.update()
+
+
+        def handle_button_click(e, index):
+            if check_current_page(index):
+                if index == meal_num - 1:
+                    submit()
+                else:
+                    move(index + 1)
+            else:
+                page.dialog = alerts
+                alerts.open = True
+                page.update()
 
         def submit():
             global submission_row
@@ -74,7 +108,7 @@ def main(page: ft.Page):
                 page.add(submission_row)
             else:
                 submission_row.visible = True
-            for col in meal: #clear visibility
+            for col in meal:  #clear visibility
                 col.visible = False
             page.add(submission_row)
             page.update()
@@ -82,32 +116,70 @@ def main(page: ft.Page):
             ##additional code for keeping the variables
 
         for i in range(meal_num):
-            meal.append(ft.Column(
-                controls=[
-                    ft.Text(value="MEAL " + str(i + 1) + ": "),
-                    ft.Checkbox(label="Breakfast", value=False),
-                    ft.Checkbox(label="Lunch", value=False),
-                    ft.Checkbox(label="Dinner", value=False),
-                    ft.Checkbox(label="Snacks", value=False),
-                    ft.Row(
+            # Wrap each checkbox with a Container to control alignment
+            checkboxes = [
+                ft.Container(
+                    content=ft.Checkbox(
+                        label="Breakfast", value=False,
+                        on_change=lambda e, index=i, id="breakfast": checkbox_states[index].update(
+                            {id: e.control.value})
+                    ),
+                    alignment=ft.alignment.center  # Center align the checkbox within the container
+                ),
+                ft.Container(
+                    content=ft.Checkbox(
+                        label="Lunch", value=False,
+                        on_change=lambda e, index=i, id="lunch": checkbox_states[index].update({id: e.control.value})
+                    ),
+                    alignment=ft.alignment.center
+                ),
+                ft.Container(
+                    content=ft.Checkbox(
+                        label="Dinner", value=False,
+                        on_change=lambda e, index=i, id="dinner": checkbox_states[index].update({id: e.control.value})
+                    ),
+                    alignment=ft.alignment.center
+                ),
+                ft.Container(
+                    content=ft.Checkbox(
+                        label="Snacks", value=False,
+                        on_change=lambda e, index=i, id="snacks": checkbox_states[index].update({id: e.control.value})
+                    ),
+                    alignment=ft.alignment.center
+                )
+            ]
+            meal.append(ft.Row(
+                controls=[ft.Container(
+                    content=ft.Column(
                         controls=[
-                            ft.ElevatedButton(
-                                text="Previous",
-                                icon="arrow_back",
-                                disabled=i == 0,
-                                on_click=lambda e, index=i: move(index - 1)
-                            ),
-                            ft.ElevatedButton(
-                                text="Next" if i < meal_num - 1 else "Submit",
-                                icon="arrow_forward",
-                                on_click=lambda e, index=i: submit() if index == meal_num - 1 else move(index + 1)
+                            ft.Text(value="MEAL " + str(i + 1) + ": ", weight=ft.FontWeight.BOLD,),
+                            *checkboxes,
+                            ft.Row(
+                                controls=[
+                                    ft.ElevatedButton(
+                                        text="Previous",
+                                        icon="arrow_back",
+                                        disabled=i == 0,
+                                        on_click=lambda e, index=i - 1: move(index)
+                                    ),
+                                    ft.ElevatedButton(
+                                        text="Next" if i < meal_num - 1 else "Submit",
+                                        icon="arrow_forward",
+                                        on_click=lambda e, index=i: handle_button_click(e, index)
+                                    )
+                                ],
+                                alignment=ft.alignment.center
                             )
                         ],
-                    )
+                    ),
+                    alignment=ft.alignment.center,  # Control the alignment as required
+                )
                 ],
-                visible=False  # Initially set all to not visible
-            ))
+                visible=True if i == 0 else False,
+                alignment=ft.MainAxisAlignment.CENTER
 
+            ))
+            # Then append the column to the meals list
         move(0)  # Set initial visibility
         return meal  # Return the list of meal controls, not the result of move()
 
@@ -118,3 +190,4 @@ def main(page: ft.Page):
 
 
 ft.app(target=main)
+
