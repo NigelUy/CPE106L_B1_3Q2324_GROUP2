@@ -1,8 +1,63 @@
 import flet as ft
+import pandas as pd
 submission_row = None
 
 
-def main(page: ft.Page):
+def information(calorie_goal, number_of_meals):
+    return ft.Row(
+        controls=[
+            ft.Container(
+                content=ft.Text(value="CALORIE GOAL: ", size=50, weight=ft.FontWeight.BOLD, italic=True),
+            ),
+            ft.Container(
+                content=ft.Text(value=str(calorie_goal), size=50, italic=True),
+                border=ft.border.all(2),
+                padding=10
+            ),
+            ft.Container(
+                content=ft.Image(src="Blender.png", fit=ft.ImageFit.SCALE_DOWN, width=100, height=100),
+                expand=True
+            ),
+            ft.Container(
+                content=ft.Text(value="MEAL COUNT: ", size=50, italic=True, weight=ft.FontWeight.BOLD),
+                alignment=ft.alignment.center
+            ),
+            ft.Container(
+                content=ft.Text(value=str(number_of_meals), size=50, italic=True),
+                alignment=ft.alignment.center,
+                padding=10,
+                border=ft.border.all(2),
+            ),
+        ],
+    )
+
+def create_datatables():
+    table=ft.DataTable(
+        expand=True,
+        border=ft.border.all(2, "black"),
+        show_bottom_border=True,
+
+        columns=[
+                ft.DataColumn(ft.Text("Meal Type")),
+                ft.DataColumn(ft.Text("Meal_name")),
+                ft.DataColumn(ft.Text("Calories")),
+                ft.DataColumn(ft.Text("Ingredients")),
+                ft.DataColumn(ft.Text("Description")),
+            ],
+        rows=[
+            ft.DataRow([
+                ft.DataCell(ft.Text(f"Snack")),
+                ft.DataCell(ft.Text("UNGABUNGA")),
+                ft.DataCell(ft.Text(f"1000")),
+                ft.DataCell(ft.Text(f"Apples,bananasApplesApplesApplesApplesApplesApplesApplesApplesApplesApplesApplesApplesApplesApplesApplesApples")),
+                ft.DataCell(ft.Text(f"horrid")),
+            ]) for i in range(100)  # Test with 100 rows
+        ]
+        )
+    cv = ft.Column([table])
+    rv = ft.Row([cv],scroll=True,  vertical_alignment=ft.CrossAxisAlignment.START)
+    return rv
+def ui(page: ft.Page):
 
     page.navigation_bar = ft.NavigationBar(
         bgcolor="blue",
@@ -10,33 +65,6 @@ def main(page: ft.Page):
         destinations=[ft.NavigationDestination(icon="home")]
     )
 
-    def information(calorie_goal, number_of_meals):
-        return ft.Row(
-            controls=[
-                ft.Container(
-                    content=ft.Text(value="CALORIE GOAL: ", size=50, weight=ft.FontWeight.BOLD, italic=True),
-                ),
-                ft.Container(
-                    content=ft.Text(value=str(calorie_goal), size=50, italic=True),
-                    border=ft.border.all(2),
-                    padding=10
-                ),
-                ft.Container(
-                    content=ft.Image(src="Blender.png", fit=ft.ImageFit.SCALE_DOWN, width=100, height=100),
-                    expand=True
-                ),
-                ft.Container(
-                    content=ft.Text(value="MEAL COUNT: ", size=50, italic=True, weight=ft.FontWeight.BOLD),
-                    alignment=ft.alignment.center
-                ),
-                ft.Container(
-                    content=ft.Text(value=str(number_of_meals), size=50, italic=True),
-                    alignment=ft.alignment.center,
-                    padding=10,
-                    border=ft.border.all(2),
-                ),
-            ],
-        )
 
     def meal_Type(meal_num):
         meal = []
@@ -184,10 +212,13 @@ def main(page: ft.Page):
         return meal  # Return the list of meal controls, not the result of move()
 
     page.add(
-        information(1000, 3),
-        *meal_Type(3)  # Use the asterisk (*) to unpack the list of controls
+        ft.Column(expand=True,scroll=ft.ScrollMode.ALWAYS, controls=[
+            information(1000, 3),
+            *meal_Type(3),  # Use the asterisk (*) to unpack the list of controls
+            create_datatables()
+        ])
     )
 
 
-ft.app(target=main)
+ft.app(target=ui)
 
