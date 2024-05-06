@@ -37,8 +37,7 @@ class Register(Container):
 
         self.submit_button = Container(
             content = ElevatedButton(
-                text='Login',
-
+                text='Register',
             )
         )        
 

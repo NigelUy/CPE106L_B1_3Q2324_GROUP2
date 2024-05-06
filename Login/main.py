@@ -1,6 +1,7 @@
 from flet import *
 from login import Login
 from register import Register
+from dashboard import Dashboard
 
 class Main(UserControl):
     def __init__(self, page: Page,):
@@ -9,12 +10,13 @@ class Main(UserControl):
 
     def init_helper(self,):
         self.page.on_route_change = self.on_route_change
-        self.page.go('/login')
+        self.page.go('/dashboard')
         
     def on_route_change(self, route):
         new_page = {
             "/login": Login,
             "/register": Register,
+            "/dashboard": Dashboard,
         }[self.page.route](self.page)
 
         self.page.views.clear()
