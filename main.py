@@ -1,22 +1,28 @@
 from flet import *
-from login import Login
-from register import Register
-from dashboard import Dashboard
+from pages.login import Login
+from pages.register import Register
+from pages.dashboard import Dashboard
+from pages.register_info import Register_Info
+from pages.physical_stats import Physical_Stats
+#from mealgeneration.meal_generation_ui import person_info
 
-class Main(UserControl):
+class Main(Control):
     def __init__(self, page: Page,):
         self.page = page
         self.init_helper()
 
     def init_helper(self,):
         self.page.on_route_change = self.on_route_change
-        self.page.go('/dashboard')
+        self.page.go('/register')
         
     def on_route_change(self, route):
         new_page = {
             "/login": Login,
             "/register": Register,
             "/dashboard": Dashboard,
+            "/register_info": Register_Info,
+            "/physical_stats": Physical_Stats,
+            #"/person_info": person_info,
         }[self.page.route](self.page)
 
         self.page.views.clear()
@@ -28,4 +34,4 @@ class Main(UserControl):
         )
         self.page.update()
 
-app(target = Main)
+app(target = Main, assets_dir='assets')
