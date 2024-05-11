@@ -10,11 +10,18 @@ def get_data(conn, table_name, conditions = None):
         cursor.execute(f"SELECT * FROM {table_name} WHERE {conditions}")
     else:
         cursor.execute(f"SELECT * FROM {table_name}")
-    
+
     rows = cursor.fetchall()
     columns = [col[0] for col in cursor.description]
-    result = [{columns[i]:rows[i]} for i in range(len(columns)) for rows in rows]
-    return result
+    results = []
+    for row in rows:
+        row_dict = {}
+        
+        for i in range(len(columns)):
+            row_dict[columns[i]] = row[i]
+
+        results.append(row_dict)
+    return results
 
 def check_data_exists(conn, table_name, condition):
     cursor = conn.cursor()
@@ -23,8 +30,7 @@ def check_data_exists(conn, table_name, condition):
 
 def insert_data(conn, table_name, values):
     cursor = conn.cursor()
-    cursor.execute(
-        f"INSERT INTO {table_name} (first_name, last_name, email, password) VALUES (?, ?, ?, ?)",
+    cursor.execute(f"INSERT INTO {table_name} (first_name, last_name, email, password) VALUES (?, ?, ?, ?)",
         values 
     )
     conn.commit()

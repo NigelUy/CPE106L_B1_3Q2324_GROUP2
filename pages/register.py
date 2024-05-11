@@ -1,10 +1,12 @@
 from flet import *
 from resources.validator import Validator
-from database.crud import *
 from database import db_path
+from database.crud import *
+from database.database import create_database
 from database.hash_password import *
 import time
 
+create_database() #create database
 class Register(Container):
     def __init__(self, page: Page):
         super().__init__()
@@ -13,12 +15,12 @@ class Register(Container):
         self.validator = Validator()
         self.bgcolor = "#3778c2"
         
-        self.error_border = border.all(width=12, color = "#ff0000")
-        self.error_field = Text(value="adfadfasdfs", color="#ff0000", size = 16)
+        self.error_border = border.all(width=3, color = "#ff0000")
+        self.error_field = Text(value="", color="#ff0000", size = 16)
 
         self.first_name = Container(
             content = TextField(
-                border= border.all(),
+                border= InputBorder.NONE,
                 label='First name',
                 text_align='left',
                 bgcolor='#fffafa'
@@ -27,16 +29,16 @@ class Register(Container):
 
         self.last_name = Container(
             content = TextField(
-                border= border.all(),
+                border= InputBorder.NONE,
                 label='Last name',
                 text_align='left',
-                bgcolor='#fffafa'
+                bgcolor='#fffafa',
             )
         )
 
         self.email = Container(
             content = TextField(
-                border= border.all(),
+                border= InputBorder.NONE,
                 label='Email',
                 text_align='left',
                 bgcolor='#fffafa'
@@ -45,7 +47,7 @@ class Register(Container):
 
         self.password = Container(
             content = TextField(
-                border= border.all(),
+                border= InputBorder.NONE,
                 label='Password',
                 text_align='left',
                 bgcolor='#fffafa',
@@ -54,7 +56,7 @@ class Register(Container):
         )
         self.re_password = Container(
             content = TextField(
-                border= border.all(),
+                border= InputBorder.NONE,
                 label='Re-enter Password',
                 text_align='left',
                 bgcolor='#fffafa',
@@ -109,8 +111,6 @@ class Register(Container):
         )
 
     def register(self, e):
-        self.error_field.value = "pls gumana ka"
-        print("pls")
         first_name_value = self.first_name.content.value
         last_name_value = self.last_name.content.value
         email_value = self.email.content.value
@@ -126,36 +126,55 @@ class Register(Container):
                 self.error_field.size = 12
                 self.error_field.update()
                 self.email.update()
-                time.sleep(1.5)
-                self.email.border = self.default_border
-                self.error_field.size = 1
+                time.sleep(2)
+                self.email.border = InputBorder.NONE
+                self.error_field.value =""
                 self.error_field.update()
                 self.email.update()
 
             elif not check_data_exists(conn, "user", f"email='{email_value}'"):
-                insert_data(
-                    conn,
-                    "user",
-                    (first_name_value, last_name_value, email_value, password_value)
-                )
-                self.page.spash =ProgressBar()
-                self.error_field.value = "You have successfully registered"
-                self.error_field.color = 'green'
-                self.error_field.size = 12
-                self.page.update()
-                time.sleep(1.5)
-                self.page.splash = None
-                self.page.upate()
-                self.page.go("/login")
+                if not self.validator.is_valid_password(password_value):
+                    self.password.border =self.error_border
+                    self.error_field.value = "Enter a valid password. It should at least have 8 characters and symbols and numbers"
+                    self.error_field.update()
+                    self.password.update()
+                    time.sleep(2)
+                    self.password.border = InputBorder.NONE
+                    self.error_field.value = ""
+                    self.error_field.update()
+                    self.password.update()
+                else:
+                    if password_value == re_password_value:
+                        insert_data(
+                        conn,
+                        "user",
+                        (first_name_value, last_name_value, email_value, password_value)
+                        )
+                        self.page.spash =ProgressBar()
+                        self.error_field.value = "You have successfully registered"
+                        self.error_field.color = 'green'
+                        self.error_field.size = 12
+                        self.page.update()
+                        time.sleep(2)
+                        self.page.splash = None
+                        self.page.update()
+                        self.page.go("/login")
+                    else:
+                        self.error_field.value = "Password is not the same"
+                        self.password.border = self.error_border
+                        self.re_password.border = self.error_border
+                        self.error_field.update()
+                        self.password.update()
+                        self.re_password.update()
             else:
                 self.email.border =self.error_border
                 self.error_field.value = "Email already exists"
                 self.error_field.size = 12
                 self.error_field.update()
                 self.email.update()
-                time.sleep(1.5)
-                self.email.border = self.default_border
-                self.error_field.size = 1
+                time.sleep(2)
+                self.email.border = InputBorder.NONE
+                self.error_field.value = ""
                 self.error_field.update()
                 self.email.update()
 
@@ -163,6 +182,6 @@ class Register(Container):
             self.error_field.value = "All fields should be filled up"
             self.error_field.size = 16
             self.error_field.update()
-            time.sleep(1.5)
-            self.error_field.size = 0
+            time.sleep(2)
+            self.error_field.value = ""
             self.error_field.update()

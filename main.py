@@ -13,7 +13,7 @@ class Main(Control):
 
     def init_helper(self,):
         self.page.on_route_change = self.on_route_change
-        self.page.go('/register')
+        self.page.go('/login')
         
     def on_route_change(self, route):
         new_page = {

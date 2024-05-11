@@ -1,4 +1,10 @@
 from flet import *
+from resources.validator import Validator
+from database import db_path
+from database.crud import *
+from database.database import create_database
+from database.hash_password import *
+import time
 
 class Login(Container):
     def __init__(self, page: Page):
@@ -6,15 +12,18 @@ class Login(Container):
         self.alignment = alignment.center
         self.expand = True
         self.bgcolor = "#3778c2"
+        self.validator = Validator()
+        
+        self.error_border = border.all(width=3, color = "#ff0000")
+        self.error_field = Text(value="", color="#ff0000", size = 16)
 
-        self.username = Container(
+        self.email = Container(
             content = TextField(
                 border= InputBorder.NONE,
-                label='Username',
+                label='Email',
                 text_align='left',
                 bgcolor='#fffafa'
-            ),
-            border=border.all(width=1, color='#bdcbf4'),
+            )
         )
 
         self.password = Container(
@@ -28,14 +37,11 @@ class Login(Container):
         )
 
         self.submit_button = Container(
-            on_click= lambda e: self.page.go('dashboard'),
-            alignment='center',
-            height=5,
-            border_radius=5,
-            content = Text(
-                "Submit",
+            content = ElevatedButton(
+                text='Login',
+                on_click=self.login,
             )
-        )        
+        )     
 
         self.content = Column(
             alignment='center',
@@ -53,8 +59,10 @@ class Login(Container):
                                 size=50,
                                 text_align='center',
                                 weight = 'bold',
+                                color = "#000000"
                             ),
-                            self.username,
+                            self.error_field,
+                            self.email,
                             self.password,
                             Container(
                                 content = Text(
@@ -65,23 +73,66 @@ class Login(Container):
                                     '/register'
                                 )
                             ),
-                            Container(
-                                alignment=alignment.center,
-                                height=40,
-                                bgcolor='#c0c0c0',
-                                border_radius=30, 
-                                content=Text(
-                                    value='Login',
-                                ),
-                                on_click=lambda e: self.page.go(
-                                    '/dashboard',
-                                ),
-                            ),
+                            self.submit_button
                         ]
                     )
                 )
             ]
         )
 
-       # def login(self, e):
-            #if not self.validator.is_valid_
+    def login(self, e):
+        email_value = self.email.content.value
+        password_value = self.password.content.value
+
+        if email_value and password_value:
+            conn = connect_to_database(db_path)
+
+            if not self.validator.is_valid_email(email_value):
+                self.email.border =self.error_border
+                self.error_field.value = "Enter a valid email"
+                self.error_field.size = 12
+                self.error_field.update()
+                self.email.update()
+                time.sleep(1.5)
+                self.email.border = InputBorder.NONE
+                self.error_field.value =""
+                self.error_field.update()
+                self.email.update()
+                
+            elif check_data_exists(conn, "user", f"email='{email_value}'"):
+                get_user = get_data(conn, "user", f"email='{email_value}'")
+                is_email_match = get_user[0]["email"] == email_value
+                is_password_match = get_user[0]["password"] == password_value
+
+                if is_email_match and is_password_match:
+                    self.page.splash = ProgressBar()
+                    self.page.update()
+                    time.sleep(2)
+                    self.page.splash = None
+                    self.page.go("/dashboard")
+
+                else:
+                    self.password.border = self.error_border
+                    self.email.border = self.error_border
+                    self.error_field.value = "Email or Password is Incorrect"
+                    self.password.update()
+                    self.email.update()
+                    self.error_field.update()
+                    time.sleep(2)
+                    self.password.border = InputBorder.NONE
+                    self.email.border = InputBorder.NONE
+                    self.error_field.value = ""
+                    self.password.update()
+                    self.email.update()
+                    self.error_field.update()
+        else:
+            self.error_field.value = "All fields should be filled up"
+            self.error_field.size = 16
+            self.error_field.update()
+            time.sleep(2)
+            self.password.border = InputBorder.NONE
+            self.email.border = InputBorder.NONE
+            self.error_field.value = ""
+            self.password.update()
+            self.email.update()            
+            self.error_field.update()            

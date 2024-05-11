@@ -19,13 +19,8 @@ class Validator():
         return re.match(pattern, email) is not None
 
     def is_valid_password(self, password):
-        if not isinstance(password, str):
-            return False
-        if len(password) < 8:   
-            return False
-        if not any(c.isdigit() for c in password):
-            return False
-        if not re.search("[~!@#$%^&*()_+`-=][}{\|;:'<>,.?/]", password):
+        r_p = re.compile('^(?=\S{6,20}$)(?=.*?\d)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[^A-Za-z\s0-9])')
+        if not r_p.match(password):
             return False
         
         return True

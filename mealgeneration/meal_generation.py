@@ -22,7 +22,7 @@ class person_info: ### information of user and parameters for meal generation
   
         
     def meals_generation(self):
-        df = pd.read_csv("modified_recipe_updated.csv")
+        df = pd.read_csv("resources/modified_recipe_updated.csv")
         meals_info = []
         total_meal_cal = 0
         snacks_calories = 0
