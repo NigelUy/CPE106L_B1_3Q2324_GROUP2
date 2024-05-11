@@ -3,7 +3,6 @@ from resources.validator import Validator
 from database import db_path
 from database.crud import *
 from database.database import create_database
-from database.hash_password import *
 import time
 
 create_database() #create database

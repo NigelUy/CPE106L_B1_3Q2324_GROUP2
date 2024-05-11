@@ -7,6 +7,7 @@ listofmeals=[]
 
 class MealGenerator(ft.Container):
     def __init__(self, page: ft.Page):
+        super().__init__()
         self.calorie_goal = 1000
         self.number_of_meals = 3
         self.submission_row = None
@@ -14,7 +15,24 @@ class MealGenerator(ft.Container):
         self.statesofcheckboxes = []
         self.table = None
         self.page = None
-    
+
+        self.navigation_bar = ft.NavigationBar(
+            bgcolor="blue",
+            selected_index=0,
+            destinations=[ft.NavigationDestination(icon="home")]
+        )
+
+        self.view, self.table = MealGenerator.create_datatables()
+
+        self.column = ft.Column(
+            expand=True,
+            scroll=ft.ScrollMode.ALWAYS,
+            controls=[
+                self.information(1000, 3),
+                *self.meal_Type(3, 1000), 
+                self.view
+            ]
+        )
 
     def information(calorie_goal, number_of_meals):
         return ft.Row(
@@ -79,7 +97,7 @@ class MealGenerator(ft.Container):
         rv = ft.Row([cv],scroll=True,  vertical_alignment=ft.CrossAxisAlignment.START)
         return rv, table
 
-    def addrows(self,person, table):
+    def addrows(person, table):
         new_rows = [
             ft.DataRow([
                 ft.DataCell(ft.Text(", ".join(meal["meal_type"]) if isinstance(meal["meal_type"], list) else str(meal["meal_type"]))),

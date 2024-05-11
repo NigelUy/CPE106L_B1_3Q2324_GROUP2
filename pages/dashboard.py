@@ -62,11 +62,6 @@ class Dashboard(Container):
                     content=Column( #header
                         expand=True,
                         controls=[
-                            Container(
-                                height=50,
-                                bgcolor='#ffffff',
-                                padding=padding.only(top=10,bottom=20)
-                            ),
                             Column( #lower part
                                 expand=True,
                                 scroll=True,
