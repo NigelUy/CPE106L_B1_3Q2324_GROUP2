@@ -235,8 +235,8 @@ def ui(page: ft.Page):
 
     page.add(
         ft.Column(expand=True,scroll=ft.ScrollMode.ALWAYS, controls=[
-            information(1000, 3), #meal calories, mealnum
-            *meal_Type(3,page,table,1000), #mealnum, calories, page
+            information(1000, 3), #meal calories, mealnum ### replace with input of calories and meal_num
+            *meal_Type(3,page,table,1000), #mealnum, calories, page meal_num dont change page and table change 1000 with calories
             view
         ])
     )
