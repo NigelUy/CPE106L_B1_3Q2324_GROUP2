@@ -61,7 +61,7 @@ class Register_Info(Container):
                                 bgcolor='#c0c0c0',
                                 border_radius=30, 
                                 content=Text(
-                                    value='Register',
+                                    value='Save',
                                 ),
                                 on_click=lambda e: self.page.go(
                                     '/dashboard'
@@ -71,4 +71,5 @@ class Register_Info(Container):
                     )
                 )
             ]
-        )   
+        )
+       

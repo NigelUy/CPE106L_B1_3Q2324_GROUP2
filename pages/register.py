@@ -129,7 +129,6 @@ class Register(Container):
                 self.email.border = InputBorder.NONE
                 self.error_field.value =""
                 self.error_field.update()
-                self.email.update()
 
             elif not check_data_exists(conn, "user", f"email='{email_value}'"):
                 if not self.validator.is_valid_password(password_value):
@@ -162,6 +161,12 @@ class Register(Container):
                         self.error_field.value = "Password is not the same"
                         self.password.border = self.error_border
                         self.re_password.border = self.error_border
+                        self.error_field.update()
+                        self.password.update()
+                        self.re_password.update()
+                        time.sleep(2)
+                        self.password.border = InputBorder.NONE
+                        self.error_field.value = ""
                         self.error_field.update()
                         self.password.update()
                         self.re_password.update()

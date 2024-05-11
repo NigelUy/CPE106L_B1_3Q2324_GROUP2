@@ -76,7 +76,7 @@ class Dashboard(Container):
                                             value='Generate a Meal Plan',
                                             size=24
                                         ),
-                                        on_click=lambda e: self.page.go("/meal_generation"),
+                                        on_click=lambda e: self.meal_generation_on == 1,
                                     )
                                 ]
                             )
@@ -85,3 +85,6 @@ class Dashboard(Container):
                 )
             ]
         )
+
+    def meal_generation_on():
+        return 0
