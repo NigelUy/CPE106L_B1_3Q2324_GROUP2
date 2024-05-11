@@ -1,5 +1,5 @@
 from flet import *
-from mealgeneration.meal_generation import person_info
+from pages.meal_generation import person_info
 
 
 class Dashboard(Container):
@@ -81,9 +81,7 @@ class Dashboard(Container):
                                             value='Generate a Meal Plan',
                                             size=24
                                         ),
-                                        on_click=lambda e: self.page.go(
-                                            "/person_info"
-                                        )
+                                        on_click=lambda e: self.page.go("/meal_generation"),
                                     )
                                 ]
                             )

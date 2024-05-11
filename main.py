@@ -4,7 +4,7 @@ from pages.register import Register
 from pages.dashboard import Dashboard
 from pages.register_info import Register_Info
 from pages.physical_stats import Physical_Stats
-#from mealgeneration.meal_generation_ui import person_info
+from pages.meal_generation_ui import MealGenerator
 
 class Main(Control):
     def __init__(self, page: Page,):
@@ -22,6 +22,7 @@ class Main(Control):
             "/dashboard": Dashboard,
             "/register_info": Register_Info,
             "/physical_stats": Physical_Stats,
+            "/meal_generation": MealGenerator,
             #"/person_info": person_info,
         }[self.page.route](self.page)
 
